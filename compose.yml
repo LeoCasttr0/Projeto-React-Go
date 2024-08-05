@@ -1,0 +1,15 @@
+#Serviços
+services:
+#Banco de dados
+db:
+image: postgres:latest
+#Sempre reiniciar automaticamente
+restart: unless-stopped
+#Portas
+ports:
+  - ${WSRS_DATABASE_PORT:-5432}:5432
+
+#VARIÁVEIS PARA RODAR O POSTGRES (Usuário e Senha)
+environment:
+POSTGRES_USER: ${WSRS_DATABASE_USER}
+POSTGRES_PASSWORD: ${WSRS_DATABASE_PASSWORD}
