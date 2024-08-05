@@ -9,7 +9,15 @@ restart: unless-stopped
 ports:
   - ${WSRS_DATABASE_PORT:-5432}:5432
 
-#VARIÁVEIS PARA RODAR O POSTGRES (Usuário e Senha)
+#VARIÁVEIS PARA RODAR O POSTGRES (Usuário, Senha e Nome do banco)
 environment:
 POSTGRES_USER: ${WSRS_DATABASE_USER}
 POSTGRES_PASSWORD: ${WSRS_DATABASE_PASSWORD}
+POSTGRES_DB: ${WSRS_DATABASE_NAME}
+volumes:
+ - db:/var/lib/postgresql/data
+ 
+volumes:
+db:
+#sua maquina
+driver: local
