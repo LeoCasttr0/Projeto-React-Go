@@ -1,23 +1,38 @@
-#Serviços
+# Serviços
 services:
-#Banco de dados
-db:
-image: postgres:latest
-#Sempre reiniciar automaticamente
-restart: unless-stopped
-#Portas
-ports:
-  - ${WSRS_DATABASE_PORT:-5432}:5432
+  # Banco de dados
+  db:
+    # Imagem do serviço
+    image: postgres:latest
+    # Sempre reiniciar automaticamente
+    restart: unless-stopped
+    # Portas do serviço
+    ports:
+      - ${WSRS_DATABASE_PORT:-5432}:5432
+    # VARIÁVEIS PARA RODAR O POSTGRES (Usuário, Senha e Nome do banco)
+    environment:
+      POSTGRES_USER: ${WSRS_DATABASE_USER}
+      POSTGRES_PASSWORD: ${WSRS_DATABASE_PASSWORD}
+      POSTGRES_DB: ${WSRS_DATABASE_NAME}
+    volumes:
+      - db:/var/lib/postgresql/data
 
-#VARIÁVEIS PARA RODAR O POSTGRES (Usuário, Senha e Nome do banco)
-environment:
-POSTGRES_USER: ${WSRS_DATABASE_USER}
-POSTGRES_PASSWORD: ${WSRS_DATABASE_PASSWORD}
-POSTGRES_DB: ${WSRS_DATABASE_NAME}
+  # Cliente para o Postgres, interface gráfica para você interagir com o banco de dados
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:80"  # Note que removi o espaço entre os dois pontos
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmin:/var/lib/pgadmin  # Corrigi o nome do volume aqui
+
 volumes:
- - db:/var/lib/postgresql/data
- 
-volumes:
-db:
-#sua maquina
-driver: local
+  db:  # Definição do volume para o banco de dados
+    driver: local  # Definição do driver do volume
+  pgadmin:  # Definição do volume para o pgAdmin
+    driver: local  # Definição do driver do volume
